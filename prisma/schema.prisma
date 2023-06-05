@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model User {
@@ -15,6 +16,8 @@ model User {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   email     String     @unique
+  firstName String
+  lastName  String
   password  String
   playlists Playlist[]
 }
@@ -27,6 +30,8 @@ model Song {
   artist    Artist     @relation(fields: [artistId], references: [id])
   artistId  Int
   playlists Playlist[]
+  duration  Int
+  url       String
 }
 
 model Artist {
@@ -34,6 +39,7 @@ model Artist {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   songs     Song[]
+  name      String   @unique
 }
 
 model Playlist {
@@ -42,6 +48,6 @@ model Playlist {
   updatedAt DateTime @updatedAt
   name      String
   songs     Song[]
-  User      User?    @relation(fields: [userId], references: [id])
-  userId    Int?
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
 }
